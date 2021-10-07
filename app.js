@@ -1,12 +1,10 @@
-const express = require("express");
-const app = express();
+const app = require("express")();
 
-require("dotenv").config();
+const { logger, PORT } = require("./src/configs/config.js");
+const Router = require("./src/routes/routes.js");
 
-const Route = require("./src/routes/routes.js");
-const Router = Route(app);
-Router.setup();
+Router(app).setup();
 
-app.listen(3000, () => {
-    console.log("Starting server on port :3000...");
+app.listen(PORT, () => {
+    logger.info(`Starting server on port ${PORT}...`);
 });

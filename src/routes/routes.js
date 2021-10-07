@@ -1,10 +1,19 @@
-const { checkAlive } = require("../controllers/check-alive");
 const uc = require("../controllers/user");
 const rc = require("../controllers/room");
+const { checkAlive } = require("../controllers/check-alive");
+const { logger } = require("../configs/config");
+
 const UserController = uc();
 const RoomController = rc();
 
 function Route(app) {
+    console.log(typeof app);
+
+    if (typeof app !== "function") {
+        logger.fatal("INTERNAL SERVER ERROR");
+        process.exit(1);
+    }
+
     function setup() {
         app.get("/check-alive", checkAlive); // Check Alive
 
