@@ -7,8 +7,6 @@ const UserController = uc();
 const RoomController = rc();
 
 function Route(app) {
-    console.log(typeof app);
-
     if (typeof app !== "function") {
         logger.fatal("INTERNAL SERVER ERROR");
         process.exit(1);
