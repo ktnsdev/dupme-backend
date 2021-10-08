@@ -1,4 +1,4 @@
 .DS_Store
 node_modules/
 .env
-src/firebase/key/service-account-key.json
+service-account-key.json
