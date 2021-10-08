@@ -10,8 +10,8 @@ const logger = pino({
     },
 });
 
-function setupSocket(server) {
-    SocketListener(server);
+function setupSocket(server, app) {
+    SocketListener(server, app);
 }
 
 module.exports = {

@@ -3,6 +3,8 @@
 const { logger } = require("../../configs/config");
 
 function getName(req, res) {
+    const io = req.app.get("socket");
+
     if (
         req.params.uuid === undefined ||
         req.params.uuid === null ||
@@ -12,6 +14,8 @@ function getName(req, res) {
         logger.error("400 Bad request from the client");
         return res.status(400).json({ status: 400, message: "Bad Request" });
     }
+
+    io.emit("message", "hello");
 
     return res.status(200).json({ name: req.query.name, uuid: req.params.uuid });
 }

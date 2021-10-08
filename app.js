@@ -5,7 +5,7 @@ const { logger, PORT, setupSocket } = require("./src/configs/config.js");
 const Router = require("./src/routes/routes.js");
 
 Router(app).setup();
-setupSocket(server);
+setupSocket(server, app);
 
 server.listen(PORT, () => {
     logger.info(`Starting server on port ${PORT}...`);
