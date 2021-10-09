@@ -1,5 +1,6 @@
 //POST /create-room/?uuid=
 
+const dayjs = require("dayjs");
 const { logger } = require("../../configs/config");
 
 function createRoom(req, res) {
@@ -20,13 +21,13 @@ function createRoom(req, res) {
         logger.info("Generated roomID is " + roomID);
     } while (roomID === "");
     //this while use for check whether the id is already exist in the database
-    var date = new Date().toLocaleString();
+    var date = new dayjs();
     //put inside database json{room_id: xxxx, host: xxxx, time_created: xxxx}
 
     return res.status(200).json({
         status: 200,
         message: "Room created successfully",
-        room: { room_id: roomID, host: req.query.uuid, time_created: date },
+        room: { room_id: roomID, host: req.query.uuid, time_created: date.format() },
     });
 }
 
