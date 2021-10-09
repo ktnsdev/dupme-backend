@@ -2,6 +2,7 @@
 
 const { logger } = require("../../configs/config");
 const { ref, onValue } = require("firebase/database");
+const APIStatus = require("../../configs/api-errors");
 
 async function getName(req, res) {
     const io = req.app.get("socket");
@@ -12,10 +13,12 @@ async function getName(req, res) {
         req.params.uuid === undefined ||
         req.params.uuid === null ||
         req.query.name === undefined ||
-        req.query.name === null
+        req.query.name === null ||
+        req.query.name === "" ||
+        req.query.uuid === ""
     ) {
         logger.error("400 Bad request from the client");
-        return res.status(400).json({ status: 400, message: "Bad Request" });
+        return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }
 
     io.emit("message", "hello");
@@ -28,15 +31,15 @@ async function getName(req, res) {
         (error) => {
             logger.error("Retrieving from Firebase failed: " + error.name);
             return res
-                .status(555)
-                .json({ status: 555, message: "Firebase failed to function: " + error.name });
+                .status(APIStatus.INTERNAL.FIREBASE_PULL_FAILED.status)
+                .json({ response: APIStatus.INTERNAL.FIREBASE_PULL_FAILED, error: error.name });
         },
     );
 
     logger.info("Firebase pull completed");
     logger.info(firebaseTest);
 
-    return res.status(200).json({ name: req.query.name, uuid: req.params.uuid });
+    return res.status(APIStatus.OK.status).json({ name: req.query.name, uuid: req.params.uuid });
 }
 
 module.exports = { getName };
