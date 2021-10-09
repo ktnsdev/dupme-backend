@@ -9,6 +9,8 @@ function Route(app) {
         app.get("/check-alive", checkAlive); // Check Alive
 
         app.get("/user/:uuid/getName", UserController.getName); // Test API
+
+        app.get("/create-room", RoomController.createRoom); //CreateRoom
     }
 
     return { setup };
