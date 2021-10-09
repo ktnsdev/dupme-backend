@@ -9,6 +9,8 @@ function Route(app) {
         app.get("/check-alive", checkAlive); // Check Alive
 
         app.get("/user/:uuid/getName", UserController.getName); // Test API
+
+        app.post("/online/", UserController.addUser); // API 1-1 Add User
     }
 
     return { setup };
