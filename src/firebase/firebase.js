@@ -1,6 +1,5 @@
 require("dotenv").config();
 
-const fs = require("fs");
 const admin = require("firebase-admin");
 const { initializeApp } = require("firebase/app");
 const { getDatabase } = require("firebase/database");
