@@ -4,7 +4,7 @@ const dayjs = require("dayjs");
 const { logger } = require("../../configs/config");
 
 function createRoom(req, res) {
-    if (req.query.uuid === undefined || req.query.uuid === null) {
+    if (req.query.uuid === undefined || req.query.uuid === null || req.query.uuid === "") {
         logger.error("400 Bad request from the client");
         logger.error("UUID not found.");
         return res.status(400).json({ status: 400, message: "Bad Request" });
