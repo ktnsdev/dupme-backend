@@ -1,10 +1,13 @@
-const express = require("express");
-const app = express();
+const app = require("express")();
+const server = require("http").createServer(app);
 
-const Route = require("./src/routes/routes.js");
-const Router = Route(app);
-Router.setup();
+const { logger, PORT, setupSocket, setupFirebase } = require("./src/configs/config.js");
+const Router = require("./src/routes/routes.js");
 
-app.listen(3000, () => {
-    console.log("Starting server on port :3000...");
+Router(app).setup();
+setupSocket(server, app);
+setupFirebase(app);
+
+server.listen(PORT, () => {
+    logger.info(`Starting server on port ${PORT}...`);
 });
