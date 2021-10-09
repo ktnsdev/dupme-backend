@@ -1,4 +1,4 @@
-const { createRoom } = require("./createroom.js");
+const { createRoom } = require("./create-room.js");
 
 function RoomController() {
     return {

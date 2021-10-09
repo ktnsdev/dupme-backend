@@ -14,14 +14,14 @@ function createRoom(req, res) {
         return res.status(400).json({ status: 400, message: "Bad Request" });
     }
     //check UUID with database if it has ok if not return error
-    var roomID;
+    let roomID;
 
     do {
         roomID = makeID(4);
         logger.info("Generated roomID is " + roomID);
     } while (roomID === "");
     //this while use for check whether the id is already exist in the database
-    var date = new dayjs();
+    let date = new dayjs();
     //put inside database json{room_id: xxxx, host: xxxx, time_created: xxxx}
 
     return res.status(200).json({
@@ -32,10 +32,10 @@ function createRoom(req, res) {
 }
 
 function makeID(length) {
-    var result = "";
-    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
+    let result = "";
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
 
