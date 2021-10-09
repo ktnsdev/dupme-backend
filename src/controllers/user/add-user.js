@@ -1,4 +1,5 @@
 const { logger } = require("../../configs/config");
+const { v4 } = require("uuid");
 
 function addUser(req, res) {
     if (
@@ -13,27 +14,19 @@ function addUser(req, res) {
     let response = {};
 
     compareName(username);
-    makeUUID(0);
+    logger.info(makeUUID());
     //login date time?
     return res.status(200).json(response);
 }
 
-function makeUUID(length) {
-    var results = "";
-    var numnum = "0123456789";
-    var numnumLength = numnum.length;
-    for (var i = 0; i < length; i++) {
-        results += numnum.charAt(Math.floor(Math.random() * numnumLength));
-    }
-
-    return results;
+function makeUUID() {
+    return v4();
 }
 
 function compareName(username) {
-    var username;
-
-    if (req.query.name === username) return null;
-    else return username;
+    // var username;
+    // if (req.query.name === username) return null;
+    // else return username;
 }
 
 function showLogin() {
@@ -42,10 +35,10 @@ function showLogin() {
     else return null;
 }
 
-const user = {
-    uuid: user.makeUUID(5),
-    username: user.getName,
-    time_logged_in: now.getHours() + "-" + now.getMinutes(),
-};
+// const user = {
+//     uuid: user.makeUUID(5),
+//     username: user.getName,
+//     time_logged_in: now.getHours() + "-" + now.getMinutes(),
+// };
 
 module.exports = { addUser };
