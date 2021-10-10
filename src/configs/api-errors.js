@@ -36,6 +36,20 @@ const APIStatus = {
             status: 560,
             message: "Unable to retrieve data from the database",
         },
+        FIREBASE_REMOVE_FAILED: {
+            DATA_NOT_REMOVED: {
+                status: 561,
+                message: "Unable to remove data from the database. Data still there after removal.",
+            },
+            DATA_NOT_AVAILABLE: {
+                status: 562,
+                message: "Unable to remove data from the database. Wrong UUID.",
+            },
+        },
+        FIREBASE_ADD_FAILED: {
+            status: 563,
+            message: "Unable to add data to the database",
+        },
     },
 };
 
