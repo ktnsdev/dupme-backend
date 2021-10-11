@@ -7,15 +7,17 @@ function addUser(req, res) {
         req.query.username === null ||
         req.query.username === ""
     ) {
-        // bad request
+        logger.error("400 Bad request from the client");
+        return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }
 
     let username = req.query.username;
     let response = {};
 
     compareName(username);
+
     logger.info(makeUUID());
-    //login date time?
+
     return res.status(200).json(response);
 }
 
@@ -23,22 +25,24 @@ function makeUUID() {
     return v4();
 }
 
-function compareName(username) {
-    // var username;
-    // if (req.query.name === username) return null;
-    // else return username;
-}
-
 function showLogin() {
     var status;
     if (status == 200) return status;
     else return null;
+
+    var time = new Date();
+    var hour = time.getHours();
+    var min = time.getMinutes();
+    var sec = time.getSeconds();
+
+    timetime = hour + ":" + min + ":" + sec;
+    return timetime;
 }
 
-// const user = {
-//     uuid: user.makeUUID(5),
-//     username: user.getName,
-//     time_logged_in: now.getHours() + "-" + now.getMinutes(),
-// };
+const user = {
+    uuid: user.makeUUID(),
+    username: user.getName(),
+    time_logged_in: timetime,
+};
 
 module.exports = { addUser };
