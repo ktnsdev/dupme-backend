@@ -5,10 +5,8 @@ const { initializeApp } = require("firebase/app");
 const { getDatabase } = require("firebase/database");
 
 /**
- * @param {import("express")} app - Express App from Express.js, type Express
- * @returns {Object | undefined} error - Returns function can't initialise a connection to Firebase.
- * @returns {string} error.name - Returns error name.
- * @returns {string} error.message - Returns error message.
+ * @param {import("express").Application} app - Express Application from Express.js
+ * @returns {{name: string, message: string} | undefined} error - Returns an error object if the function can't initialise a connection to Firebase. No return if there's no error.
  */
 function initialiseFirebase(app) {
     if (
@@ -36,18 +34,22 @@ function initialiseFirebase(app) {
 
 /**
  * @param {import("express").Request} req - Request from Express.js.
- * @param {string} primaryPath - Primary path to request from Firebase, can be "rooms" or "users" only.
- * @param {string | undefined} secondaryPath - (optional) Secondary path to request from Firebase, can be either room ID if primary path is "rooms" or UUID if primary path is "users".
- * @returns {Object | undefined} data - If the data from Firebase is available, returns data as Object.
- * @returns {Object | undefined} error - If the data from Firebase is corrupted or the request can't be made, returns error object.
- * @returns {string} error.name - Returns error name.
- * @returns {string} error.message - Returns error message.
+ * @param {'rooms'|'users'} primaryPath - Primary path to request from Firebase, can be "rooms" or "users" only.
+ * @param {string} [secondaryPath=''] - Secondary path to request from Firebase, can be either room ID if primary path is "rooms" or UUID if primary path is "users". The default value is ''.
+ * @returns {{data: Object | undefined, error: {name: string, message: string} | undefined} | undefined} Returns the data from Firebase without error object if available. If the data from Firebase is corrupted or the request can't be made, returns error object without data.
  */
 async function receiveFromFirebase(req, primaryPath, secondaryPath) {
+    if (req === undefined) {
+        return {
+            error: "firebase-express-request-not-found",
+            message: "req parameter passed is corrupted or undefined",
+        };
+    }
+
     if (primaryPath !== "rooms" && primaryPath !== "users") {
         return {
             error: {
-                name: "wrong-primary-path",
+                name: "firebase-wrong-primary-path",
                 message: 'Primary path can only be "rooms" or "users"',
             },
         };
@@ -76,7 +78,7 @@ async function receiveFromFirebase(req, primaryPath, secondaryPath) {
     if (!data) {
         return {
             error: {
-                name: "path-not-found",
+                name: "firebase-path-not-found",
                 message: `Firebase returned null for /${primaryPath}/${secondaryPath}`,
             },
         };
@@ -87,24 +89,29 @@ async function receiveFromFirebase(req, primaryPath, secondaryPath) {
 
 /**
  * @param {import("express").Request} req - Request from Express.js.
- * @param {string} primaryPath - Primary path to request from Firebase, can be "rooms" or "users" only.
+ * @param {'rooms' | 'users'} primaryPath - Primary path to request from Firebase, can be "rooms" or "users" only.
  * @param {string} secondaryPath - Secondary path to request from Firebase, can be either room ID if primary path is "rooms" or UUID if primary path is "users".
  * @param {any} dataToAdd - Provide which data to be added to the database.
- * @returns {Object | undefined} error - If the data from Firebase is corrupted or the request can't be made, returns error object.
- * @returns {string} error.name - Returns error name.
- * @returns {string} error.message - Returns error message.
+ * @returns {{name: string, message: string} | undefined} error - If the data from Firebase is corrupted or the request can't be made, returns error object. No return if there's no error.
  */
 async function addToFirebase(req, primaryPath, secondaryPath, dataToAdd) {
+    if (req === undefined) {
+        return {
+            error: "firebase-express-request-not-found",
+            message: "req parameter passed is corrupted or undefined",
+        };
+    }
+
     if (primaryPath !== "rooms" && primaryPath !== "users") {
         return {
-            name: "wrong-primary-path",
+            name: "firebase-wrong-primary-path",
             message: 'Primary path can only be "rooms" or "users"',
         };
     }
 
     if (secondaryPath === undefined || secondaryPath === null || secondaryPath === "") {
         return {
-            name: "wrong-secondary-path",
+            name: "firebase-wrong-secondary-path",
             message: "Secondary path required to add user to the database",
         };
     }
@@ -121,23 +128,28 @@ async function addToFirebase(req, primaryPath, secondaryPath, dataToAdd) {
 
 /**
  * @param {import("express").Request} req - Request from Express.js.
- * @param {string} primaryPath - Primary path to request from Firebase, can be "rooms" or "users" only.
+ * @param {'rooms' | 'users'} primaryPath - Primary path to request from Firebase, can be "rooms" or "users" only.
  * @param {string} secondaryPath - Secondary path to request from Firebase, can be either room ID if primary path is "rooms" or UUID if primary path is "users".
- * @returns {Object | undefined} error - If the data from Firebase is corrupted or the request can't be made, returns error object.
- * @returns {string} error.name - Returns error name.
- * @returns {string} error.message - Returns error message.
+ * @returns {{name: string, message: string} | undefined} error - If the data from Firebase is corrupted or the request can't be made, returns error object. No return if there's no error.
  */
 async function removeFromFirebase(req, primaryPath, secondaryPath) {
+    if (req === undefined) {
+        return {
+            error: "firebase-express-request-not-found",
+            message: "req parameter passed is corrupted or undefined",
+        };
+    }
+
     if (primaryPath !== "rooms" && primaryPath !== "users") {
         return {
-            name: "wrong-primary-path",
+            name: "firebase-wrong-primary-path",
             message: 'Primary path can only be "rooms" or "users"',
         };
     }
 
     if (secondaryPath === undefined || secondaryPath === null || secondaryPath === "") {
         return {
-            name: "wrong-secondary-path",
+            name: "firebase-wrong-secondary-path",
             message: "Secondary path required to remove user from the database",
         };
     }
@@ -147,7 +159,7 @@ async function removeFromFirebase(req, primaryPath, secondaryPath) {
 
     if (!tempData.data) {
         return {
-            name: "path-not-found",
+            name: "firebase-path-not-found",
             message: `Firebase returned null for /${primaryPath}/${secondaryPath}, cannot remove the data`,
         };
     }
@@ -159,7 +171,7 @@ async function removeFromFirebase(req, primaryPath, secondaryPath) {
     if (tempData.data) {
         return {
             error: {
-                name: "data-not-removed",
+                name: "firebase-data-not-removed",
                 message: "Data is not removed from the database",
             },
         };
