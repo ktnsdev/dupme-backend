@@ -42,11 +42,9 @@ async function getName(req, res) {
     if (firebaseFunction === "receive") {
         let receivedData = await receiveFromFirebase(req, "users", req.params.uuid);
 
-        logger.info({ receivedData });
-
         if (receivedData.error) {
-            return res.status(APIStatus.INTERNAL.FIREBASE_PULL_FAILED.status).json({
-                response: APIStatus.INTERNAL.FIREBASE_PULL_FAILED,
+            return res.status(APIStatus.INTERNAL.FIREBASE_ERROR.status).json({
+                response: APIStatus.INTERNAL.FIREBASE_ERROR,
                 error: receivedData.error,
             });
         }
@@ -60,8 +58,8 @@ async function getName(req, res) {
 
         if (error) {
             return res
-                .status(APIStatus.INTERNAL.FIREBASE_ADD_FAILED.status)
-                .json({ response: APIStatus.INTERNAL.FIREBASE_ADD_FAILED, error: error.name });
+                .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+                .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
         }
 
         return res
@@ -74,9 +72,9 @@ async function getName(req, res) {
 
         if (error) {
             return res
-                .status(APIStatus.INTERNAL.FIREBASE_REMOVE_FAILED.DATA_NOT_REMOVED.status)
+                .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
                 .json({
-                    response: APIStatus.INTERNAL.FIREBASE_REMOVE_FAILED.DATA_NOT_REMOVED,
+                    response: APIStatus.INTERNAL.FIREBASE_ERROR,
                     error: error,
                 });
         }
@@ -85,9 +83,6 @@ async function getName(req, res) {
             .status(APIStatus.OK.status)
             .json({ status: APIStatus.OK.status, message: `Removed ${req.params.uuid}.` });
     }
-
-    logger.error("400 Bad request from the client");
-    return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
 }
 
 module.exports = { getName };
