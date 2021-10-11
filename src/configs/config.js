@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const pino = require("pino");
-const SocketListener = require("../socket/socket");
+const { socketListener } = require("../socket/socket");
 const { initialiseFirebase } = require("../firebase/firebase");
 const logger = pino({
     enabled: process.env.NODE_ENV === "development",
@@ -11,14 +11,26 @@ const logger = pino({
     },
 });
 
+/**
+ * @param {import("http").Server} server - HTTP Server Object
+ * @param {import("express").Application} app - Express Application from Express.js
+ */
 function setupSocket(server, app) {
-    SocketListener(server, app);
+    let err = socketListener(server, app);
+    if (err !== undefined) {
+        logger.error("FATAL: " + err.name);
+        logger.error(err.message);
+        process.exit(1);
+    }
 }
 
+/**
+ * @param {import("express").Application} app - Express Application from Express.js
+ */
 function setupFirebase(app) {
     var err = initialiseFirebase(app);
     if (err !== undefined) {
-        logger.error("ERROR: " + err.error);
+        logger.error("FATAL: " + err.name);
         logger.error(err.message);
         process.exit(1);
     }

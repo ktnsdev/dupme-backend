@@ -13,28 +13,28 @@ const APIStatus = {
             message: "Unspecified Internal Server Error",
         },
         USERNAME_USED: {
-            status: 550,
+            status: 500,
             message: "Username has been used",
         },
         UUID_NOT_FOUND: {
-            status: 551,
+            status: 500,
             message: "Can't find online player with that UUID",
         },
         ROOM_NOT_FOUND: {
-            status: 552,
+            status: 500,
             message: "Can't find room with that ID",
         },
         PLAYER_NOT_IN_ROOM: {
-            status: 553,
+            status: 500,
             message: "The player with that UUID is not in the room",
         },
         PLAYER_NOT_HOST: {
-            status: 554,
+            status: 500,
             message: "The player who is not the host cannot make this request",
         },
-        FIREBASE_PULL_FAILED: {
-            status: 560,
-            message: "Unable to retrieve data from the database",
+        FIREBASE_ERROR: {
+            status: 500,
+            message: "Firebase request error",
         },
     },
 };
