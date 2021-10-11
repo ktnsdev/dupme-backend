@@ -17,7 +17,7 @@ function Route(app) {
 
         app.get("/user/:uuid/getName", UserController.getName); // Test API
 
-        app.get("/create-room", RoomController.createRoom); // API 2-1 Create Room
+        app.post("/create-room", RoomController.createRoom); // API 2-1 Create Room
     }
 
     return { setup };
