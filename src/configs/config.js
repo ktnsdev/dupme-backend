@@ -15,10 +15,13 @@ function setupSocket(server, app) {
     SocketListener(server, app);
 }
 
+/**
+ * @param {import("express")} app - Express App from Express.js, type Express
+ */
 function setupFirebase(app) {
     var err = initialiseFirebase(app);
     if (err !== undefined) {
-        logger.error("ERROR: " + err.error);
+        logger.error("ERROR: " + err.name);
         logger.error(err.message);
         process.exit(1);
     }
