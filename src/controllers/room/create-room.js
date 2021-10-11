@@ -28,14 +28,14 @@ async function createRoom(req, res) {
         recievedRoomData = await testRecieveRoomFromFirebase(req, req.params.uuid);
     } while (recievedRoomData.data);
     //this while use for check whether the id is already exist in the database
-    let date = new dayjs();
+    let date = dayjs();
     //put inside database json{room_id: xxxx, host: xxxx, time_created: xxxx}
     let roomData = {
         room_id: roomID,
         host: req.query.uuid,
         players: { 0: req.query.uuid },
         settings: { difficulty: 0, levels: 0, player_limit: 2, turns: 0 },
-        time_created: date.format(),
+        time_created: date.toISOString(),
     };
     let error = await testAddRoomToFirebase(req, roomID, roomData);
 
