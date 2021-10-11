@@ -1,4 +1,16 @@
-function SocketListener(server, app) {
+/**
+ * @param {import("http").Server} server - HTTP Server Object
+ * @param {import("express").Application} app - Express Application from Express.js
+ * @returns {{name: string, message: string} | undefined} error - Returns an error object if the socket server cannot be started. No return if there's no error.
+ */
+function socketListener(server, app) {
+    if (server === undefined || app === undefined) {
+        return {
+            name: "socket-undefined-http-server",
+            message: "Socket server cannot be started because the HTTP server parameter is corrupted or undefined."
+        }
+    }
+
     const { logger } = require("../configs/config");
     const { Server } = require("socket.io");
     const io = new Server(server);
@@ -21,4 +33,4 @@ function SocketListener(server, app) {
     logger.info("A socket server has been started...");
 }
 
-module.exports = SocketListener;
+module.exports = { socketListener };

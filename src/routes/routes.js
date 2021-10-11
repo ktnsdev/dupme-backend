@@ -6,9 +6,14 @@ const { logger } = require("../configs/config");
 const UserController = uc();
 const RoomController = rc();
 
+/**
+ * @param {import("express").Application} app - Express Application from Express.js
+ */
 function Route(app) {
-    if (typeof app !== "function") {
-        logger.fatal("INTERNAL SERVER ERROR");
+    if (app === undefined) {
+        logger.error(
+            "FATAL: Router cannot be started because Express parameter is corrupted or undefined",
+        );
         process.exit(1);
     }
 
