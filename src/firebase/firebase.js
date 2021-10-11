@@ -10,20 +10,20 @@ const { getDatabase } = require("firebase/database");
  */
 function initialiseFirebase(app) {
     if (
-        process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH === undefined ||
+        process.env.FIREBASE_SERVICE_ACCOUNT_KEY_JSON === undefined ||
         process.env.FIREBASE_DATABASE_DOMAIN === undefined
     ) {
         return {
-            name: "firebase-env-not-found",
+            name: "firebase-key-json-env-not-found",
             message:
                 "The server cannot initialise connection to Firebase. Please check whether the environment file is structured correctly.",
         };
     }
 
-    var serviceAccount = require(process.env.FIREBASE_SERVICE_ACCOUNT_KEY_PATH);
+    let key = process.env.FIREBASE_SERVICE_ACCOUNT_KEY_JSON;
 
     admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
+        credential: admin.credential.cert(JSON.parse(key)),
         databaseURL: process.env.FIREBASE_DATABASE_DOMAIN,
     });
 
