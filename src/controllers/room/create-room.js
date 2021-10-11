@@ -30,7 +30,13 @@ async function createRoom(req, res) {
     //this while use for check whether the id is already exist in the database
     let date = new dayjs();
     //put inside database json{room_id: xxxx, host: xxxx, time_created: xxxx}
-    let roomData = { room_id: roomID, host: req.query.uuid, time_created: date.format() };
+    let roomData = {
+        room_id: roomID,
+        host: req.query.uuid,
+        players: { 0: req.query.uuid },
+        settings: { difficulty: 0, levels: 0, player_limit: 2, turns: 0 },
+        time_created: date.format(),
+    };
     let error = await testAddRoomToFirebase(req, roomID, roomData);
 
     if (error) {
@@ -41,7 +47,7 @@ async function createRoom(req, res) {
     return res.status(APIStatus.OK.status).json({
         status: APIStatus.OK.status,
         message: "Room created successfully",
-        room: { room_id: roomID, host: req.query.uuid, time_created: date.format() },
+        room: roomData,
     });
 }
 
