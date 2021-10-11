@@ -1,7 +1,10 @@
 const { logger } = require("../../configs/config");
 const { v4 } = require("uuid");
+const dayjs = require("dayjs");
+const { addToFirebase } = require("../../firebase/firebase");
+const APIStatus = require("../../configs/api-errors");
 
-function addUser(req, res) {
+async function addUser(req, res) {
     if (
         req.query.username === undefined ||
         req.query.username === null ||
@@ -11,38 +14,30 @@ function addUser(req, res) {
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }
 
-    let username = req.query.username;
-    let response = {};
+    let uuid = v4();
 
-    compareName(username);
+    let response = {
+        logged_in: dayjs().toISOString(),
+        status: "idle",
+        username: req.query.username,
+    };
 
-    logger.info(makeUUID());
+    let error = await addToFirebase(req, "users", uuid, response);
 
-    return res.status(200).json(response);
+    if (error) {
+        return res
+            .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+    }
+
+    return res.status(APIStatus.OK.status).json({
+        response: APIStatus.OK,
+        data: {
+            username: req.query.username,
+            uuid: uuid,
+            logged_in: response.logged_in,
+        },
+    });
 }
-
-function makeUUID() {
-    return v4();
-}
-
-function showLogin() {
-    var status;
-    if (status == 200) return status;
-    else return null;
-
-    var time = new Date();
-    var hour = time.getHours();
-    var min = time.getMinutes();
-    var sec = time.getSeconds();
-
-    timetime = hour + ":" + min + ":" + sec;
-    return timetime;
-}
-
-const user = {
-    uuid: user.makeUUID(),
-    username: user.getName(),
-    time_logged_in: timetime,
-};
 
 module.exports = { addUser };
