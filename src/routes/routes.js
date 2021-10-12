@@ -33,6 +33,7 @@ function Route(app) {
         app.post("/online/", UserController.addUser); // API 1-1 Add User
 
         app.post("/create-room", RoomController.createRoom); // API 2-1 Create Room
+        app.post("/room/:room_id/join", RoomController.joinRoom); // API 2-2 Join Room
         app.post("/room/:room_id/start", RoomController.startRoom); //API 2-5 Start Room
     }
 

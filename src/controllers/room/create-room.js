@@ -41,6 +41,7 @@ async function createRoom(req, res) {
         host: req.query.uuid,
         players: [req.query.uuid],
         settings: { difficulty: 0, levels: 0, player_limit: 2, turns: 0 },
+        status: "idle",
         time_created: date.toISOString(),
     };
 
