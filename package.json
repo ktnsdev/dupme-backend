@@ -1,8 +1,11 @@
 {
     "name": "dupme-backend",
     "version": "1.0.0",
-    "description": "ligma back",
+    "description": "",
     "main": "app.js",
+    "engines": {
+        "node": "14.x"
+    },
     "scripts": {
         "start": "node app.js",
         "dev": "nodemon app.js",
@@ -10,14 +13,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/nantanitv/dupme-backend.git"
+        "url": "git+https://github.com/ktnsdev/dupme-backend.git"
     },
     "author": "",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/nantanitv/dupme-backend/issues"
+        "url": "https://github.com/ktnsdev/dupme-backend/issues"
     },
-    "homepage": "https://github.com/nantanitv/dupme-backend#readme",
+    "homepage": "https://github.com/ktnsdev/dupme-backend#readme",
     "dependencies": {
         "@types/node": "^16.10.3",
         "dayjs": "^1.10.7",
