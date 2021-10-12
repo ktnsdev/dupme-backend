@@ -20,6 +20,10 @@ const APIStatus = {
             status: 500,
             message: "Can't find online player with that UUID",
         },
+        ROOM_NOT_IDLE: {
+            status: 500, 
+            message: "Can't start the room because the room is not idle."
+        },
         ROOM_NOT_FOUND: {
             status: 500,
             message: "Can't find room with that ID",
