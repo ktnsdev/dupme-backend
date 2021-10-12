@@ -23,6 +23,8 @@ function Route(app) {
         app.get("/user/:uuid/getName", UserController.getName); // Test API
 
         app.post("/create-room", RoomController.createRoom); // API 2-1 Create Room
+
+        app.post("/room/:room_id/join", RoomController.joinRoom); // API 2-2 Join Room
     }
 
     return { setup };
