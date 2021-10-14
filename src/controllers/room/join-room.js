@@ -57,7 +57,7 @@ async function joinRoom(req, res) {
     io.to(req.params.room_id).emit("user_joined", {
         event: "user_joined",
         data: {
-            uuid: req.puery.uuid,
+            uuid: req.query.uuid,
             timestamp: dayjs().toISOString(),
         },
     });
