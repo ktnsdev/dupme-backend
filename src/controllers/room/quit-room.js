@@ -1,12 +1,16 @@
-//POST /room/:room_id/join?uuid=
+//POST /room/:room_id/kick?uuid=
 
 const dayjs = require("dayjs");
 const { logger } = require("../../configs/config");
 const APIStatus = require("../../configs/api-errors");
-const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase");
-const { socketListener } = require("../../socket/socket");
+const {
+    receiveFromFirebase,
+    addToFirebase,
+    removeFromFirebase,
+} = require("../../firebase/firebase");
+const { closeRoom } = require("./close-room");
 
-async function joinRoom(req, res) {
+async function quitRoom(req, res) {
     if (req.query.uuid === undefined || req.query.uuid === null || req.query.uuid === "") {
         logger.error("400 Bad request from the client");
         logger.error("UUID not found.");
@@ -36,16 +40,16 @@ async function joinRoom(req, res) {
             .status(APIStatus.INTERNAL.ROOM_NOT_FOUND.status)
             .json(APIStatus.INTERNAL.ROOM_NOT_FOUND);
     }
-    if (receivedRoomData.data.status !== "idle") {
-        logger.info("The Room is ongoing.");
-        return res.status(500).json({ status: 500, message: "The room is ongoing." });
+    let playersdata = await removeUser(receivedRoomData.data.players, req.query.uuid);
+    if (playersdata == "") {
+        logger.info("The room is empty.");
+        logger.info("Room deleted");
+        await closeRoom(req, res);
+        return res.status(APIStatus.OK.status).json({
+            status: APIStatus.OK.status,
+            message: `Succesfully delete user ${req.query.uuid} and delete room ${req.params.room_id}.`,
+        });
     }
-    if (receivedRoomData.data.players.length == receivedRoomData.data.settings.player_limit) {
-        logger.info("Room is Full.");
-        return res.status(500).json({ status: 500, message: "Room is full." });
-    }
-    let playersdata = receivedRoomData.data.players;
-    playersdata.push(req.query.uuid);
     let error = await addToFirebase(req, "rooms", req.params.room_id, playersdata, "players");
     if (error) {
         return res
@@ -54,8 +58,8 @@ async function joinRoom(req, res) {
     }
 
     const io = req.app.get("socket");
-    io.to(req.params.room_id).emit("user_joined", {
-        event: "user_joined",
+    io.to(req.params.room_id).emit("user_quit", {
+        event: "user_quit",
         data: {
             uuid: req.query.uuid,
             timestamp: dayjs().toISOString(),
@@ -64,8 +68,16 @@ async function joinRoom(req, res) {
 
     return res.status(APIStatus.OK.status).json({
         status: APIStatus.OK.status,
-        message: `Succesfully Join room ${req.params.room_id}.`,
+        message: `Succesfully delete user ${req.query.uuid} in room ${req.params.room_id}.`,
     });
 }
 
-module.exports = { joinRoom };
+function removeUser(allUser, remUser) {
+    const index = allUser.indexOf(remUser);
+    if (index != -1) {
+        allUser.splice(index, 1);
+    }
+    return allUser;
+}
+
+module.exports = { quitRoom };

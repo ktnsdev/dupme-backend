@@ -25,6 +25,10 @@ function Route(app) {
         app.post("/create-room", RoomController.createRoom); // API 2-1 Create Room
 
         app.post("/room/:room_id/join", RoomController.joinRoom); // API 2-2 Join Room
+
+        app.post("/room/:room_id/kick", RoomController.quitRoom); // API 2-3 Quit Room
+
+        app.post("/room/:room_id/close", RoomController.closeRoom); //API 2-4 Close Room
     }
 
     return { setup };
