@@ -45,6 +45,13 @@ async function joinRoom(req, res) {
         return res.status(500).json({ status: 500, message: "Room is full." });
     }
     let playersdata = receivedRoomData.data.players;
+    for (let i = 0; i < playersdata.length; i++) {
+        if (playersdata[i] == req.query.uuid) {
+            return res
+                .status(500)
+                .json({ status: 500, message: "The player already in this room" });
+        }
+    }
     playersdata.push(req.query.uuid);
     let error = await addToFirebase(req, "rooms", req.params.room_id, playersdata, "players");
     if (error) {
