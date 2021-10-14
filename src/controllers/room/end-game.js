@@ -3,9 +3,9 @@ const APIStatus = require("../../configs/api-errors");
 const { logger } = require("../../configs/config");
 const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase");
 
-const IN_GAME_STATUS = "in-game";
+const IDLE_STATUS = "idle";
 
-async function startGame(req, res) {
+async function endGame(req, res) {
     logger.info(`${req.method} ${req.baseUrl + req.path}`);
 
     if (
@@ -39,20 +39,20 @@ async function startGame(req, res) {
             .json(APIStatus.INTERNAL.ROOM_NOT_FOUND);
     }
 
-    if (dataFromFirebase.data !== "idle") {
-        logger.error(APIStatus.INTERNAL.ROOM_NOT_IDLE.message);
+    if (dataFromFirebase.data !== "in-game") {
+        logger.error(APIStatus.INTERNAL.ROOM_NOT_IN_GAME.message);
         return res
-            .status(APIStatus.INTERNAL.ROOM_NOT_IDLE.status)
-            .json(APIStatus.INTERNAL.ROOM_NOT_IDLE);
+            .status(APIStatus.INTERNAL.ROOM_NOT_IN_GAME.status)
+            .json(APIStatus.INTERNAL.ROOM_NOT_IN_GAME);
     }
 
     const io = req.app.get("socket");
     await io.to(roomId).emit("room-event", {
         event: "room-event",
-        data: { message: "start", timestamp: dayjs().toISOString() },
+        data: { message: "end", timestamp: dayjs().toISOString() },
     });
 
-    let error = await addToFirebase(req, "rooms", roomId, IN_GAME_STATUS, "/status");
+    let error = await addToFirebase(req, "rooms", roomId, IDLE_STATUS, "/status");
 
     if (error) {
         logger.error(
@@ -63,8 +63,8 @@ async function startGame(req, res) {
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
     }
 
-    logger.info(`Room ID ${roomId} has started its game.`);
+    logger.info(`Room ID ${roomId} has ended its game.`);
     return res.status(APIStatus.OK.status).json(APIStatus.OK);
 }
 
-module.exports = { startGame };
+module.exports = { endGame };

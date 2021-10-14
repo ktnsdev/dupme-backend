@@ -22,7 +22,11 @@ const APIStatus = {
         },
         ROOM_NOT_IDLE: {
             status: 500, 
-            message: "Can't start the room because the room is not idle."
+            message: "Can't start the game because the room is not idle."
+        },
+        ROOM_NOT_IN_GAME: {
+            status: 500,
+            message: "Can't end the game because the game has not been started yet."
         },
         ROOM_NOT_FOUND: {
             status: 500,
