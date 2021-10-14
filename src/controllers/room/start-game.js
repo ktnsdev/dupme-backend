@@ -5,7 +5,7 @@ const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase"
 
 const IN_GAME_STATUS = "in-game";
 
-async function startRoom(req, res) {
+async function startGame(req, res) {
     logger.info(`${req.method} ${req.baseUrl + req.path}`);
 
     if (
@@ -67,4 +67,4 @@ async function startRoom(req, res) {
     return res.status(APIStatus.OK.status).json(APIStatus.OK);
 }
 
-module.exports = { startRoom };
+module.exports = { startGame };
