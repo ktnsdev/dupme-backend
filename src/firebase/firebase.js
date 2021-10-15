@@ -42,8 +42,10 @@ function initialiseFirebase(app) {
 async function receiveFromFirebase(req, primaryPath, secondaryPath, additionalPath) {
     if (req === undefined) {
         return {
-            error: "firebase-express-request-not-found",
-            message: "req parameter passed is corrupted or undefined",
+            error: {
+                error: "firebase-express-request-not-found",
+                message: "req parameter passed is corrupted or undefined",
+            },
         };
     }
 
