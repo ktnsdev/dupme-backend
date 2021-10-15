@@ -20,6 +20,10 @@ const APIStatus = {
             status: 500,
             message: "Can't find online player with that UUID",
         },
+        USER_DATA_CORRUPTED: {
+            status: 500,
+            message: "User data is corrupted.",
+        },
         ROOM_NOT_FOUND: {
             status: 500,
             message: "Can't find room with that ID",

@@ -22,14 +22,18 @@ async function checkStatus(req, res) {
             .json(APIStatus.INTERNAL.UUID_NOT_FOUND);
     }
 
-    let response = {
+    if (!data.data.username || !data.data.status || !data.data.logged_in) {
+        return res
+            .status(APIStatus.INTERNAL.USER_DATA_CORRUPTED.status)
+            .json(APIStatus.INTERNAL.USER_DATA_CORRUPTED);
+    }
+
+    return res.status(APIStatus.OK.status).json({
         username: data.data.username,
         status: data.data.status,
-        time_online: dayjs(data.data.logged_in).diff(dayjs()),
+        time_online: dayjs(dayjs()).diff(data.data.logged_in),
         logged_in: data.data.logged_in,
-    };
-
-    return res.status(APIStatus.OK.status).json(response);
+    });
 }
 
 module.exports = { checkStatus };
