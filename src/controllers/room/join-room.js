@@ -22,7 +22,6 @@ async function joinRoom(req, res) {
     }
 
     let receivedUserData = await receiveFromFirebase(req, "users", req.query.uuid);
-    let receivedRoomData = await receiveFromFirebase(req, "rooms", req.params.room_id);
 
     if (!receivedUserData.data) {
         logger.error(APIStatus.INTERNAL.UUID_NOT_FOUND.message);
@@ -30,6 +29,8 @@ async function joinRoom(req, res) {
             .status(APIStatus.INTERNAL.UUID_NOT_FOUND.status)
             .json(APIStatus.INTERNAL.UUID_NOT_FOUND);
     }
+
+    let receivedRoomData = await receiveFromFirebase(req, "rooms", req.params.room_id);
 
     if (!receivedRoomData.data) {
         logger.error(APIStatus.INTERNAL.ROOM_NOT_FOUND.message);
