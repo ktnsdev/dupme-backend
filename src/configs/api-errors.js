@@ -28,6 +28,10 @@ const APIStatus = {
             status: 500,
             message: "Can't end the game because the game has not been started yet."
         },
+        USER_DATA_CORRUPTED: {
+            status: 500,
+            message: "User data is corrupted.",
+        },
         ROOM_NOT_FOUND: {
             status: 500,
             message: "Can't find room with that ID",
