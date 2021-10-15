@@ -40,15 +40,13 @@ async function quitRoom(req, res) {
             .status(APIStatus.INTERNAL.ROOM_NOT_FOUND.status)
             .json(APIStatus.INTERNAL.ROOM_NOT_FOUND);
     }
+    
     let playersdata = await removeUser(receivedRoomData.data.players, req.query.uuid);
     if (playersdata == "") {
         logger.info("The room is empty.");
         logger.info("Room deleted");
         await closeRoom(req, res);
-        return res.status(APIStatus.OK.status).json({
-            status: APIStatus.OK.status,
-            message: `Succesfully delete user ${req.query.uuid} and delete room ${req.params.room_id}.`,
-        });
+        return
     }
     let error = await addToFirebase(req, "rooms", req.params.room_id, playersdata, "players");
     if (error) {
@@ -58,7 +56,7 @@ async function quitRoom(req, res) {
     }
 
     const io = req.app.get("socket");
-    io.to(req.params.room_id).emit("user_quit", {
+    io.to(req.params.room_id).emit("room-event", {
         event: "user_quit",
         data: {
             uuid: req.query.uuid,

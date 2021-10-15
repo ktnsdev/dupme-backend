@@ -27,7 +27,7 @@ async function closeRoom(req, res) {
     }
 
     const io = req.app.get("socket");
-    io.to(req.params.room_id).emit("room_closed", {
+    io.to(req.params.room_id).emit("room-event", {
         event: "room_closed",
         data: {
             uuid: req.query.uuid,
