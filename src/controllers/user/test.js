@@ -20,6 +20,8 @@ const addToFirebaseMockData = {
 async function getName(req, res) {
     const io = req.app.get("socket");
 
+    logger.info(`${req.method} ${req.baseUrl + req.path}`);
+
     if (
         req.params.uuid === undefined ||
         req.params.uuid === null ||
