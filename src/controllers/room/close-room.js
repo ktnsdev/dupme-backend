@@ -6,6 +6,7 @@ const APIStatus = require("../../configs/api-errors");
 const { removeFromFirebase } = require("../../firebase/firebase");
 
 async function closeRoom(req, res) {
+    logger.info(`${req.method} ${req.baseUrl + req.path}`);
     if (
         req.params.room_id === undefined ||
         req.params.room_id === null ||
@@ -32,10 +33,7 @@ async function closeRoom(req, res) {
         },
     });
     logger.info(`Room ${req.params.room_id} closed successfully.`);
-    return res.status(APIStatus.OK.status).json({
-        status: APIStatus.OK.status,
-        message: APIStatus.OK,
-    });
+    return res.status(APIStatus.OK.status).json(APIStatus.OK);
 }
 
 module.exports = { closeRoom };

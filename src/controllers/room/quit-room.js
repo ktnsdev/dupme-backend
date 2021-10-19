@@ -7,6 +7,7 @@ const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase"
 const { closeRoom } = require("./close-room");
 
 async function quitRoom(req, res) {
+    logger.info(`${req.method} ${req.baseUrl + req.path}`);
     if (
         req.query.uuid === undefined ||
         req.query.uuid === null ||
@@ -92,11 +93,8 @@ async function quitRoom(req, res) {
             timestamp: dayjs().toISOString(),
         },
     });
-
-    return res.status(APIStatus.OK.status).json({
-        status: APIStatus.OK.status,
-        message: `Succesfully delete user ${req.query.uuid} in room ${req.params.room_id}.`,
-    });
+    logger.info(`Succesfully delete user ${req.query.uuid} in room ${req.params.room_id}.`);
+    return res.status(APIStatus.OK.status).json(APIStatus.OK);
 }
 
 function removeUser(allUser, remUser) {

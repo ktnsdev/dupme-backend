@@ -6,6 +6,7 @@ const APIStatus = require("../../configs/api-errors");
 const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase");
 
 async function createRoom(req, res) {
+    logger.info(`${req.method} ${req.baseUrl + req.path}`);
     if (req.query.uuid === undefined || req.query.uuid === null || req.query.uuid === "") {
         logger.error("400 Bad request from the client");
         logger.error("UUID not found.");
@@ -71,12 +72,8 @@ async function createRoom(req, res) {
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
     }
-
-    return res.status(APIStatus.OK.status).json({
-        status: APIStatus.OK.status,
-        message: "Room created successfully",
-        room: roomData,
-    });
+    logger.info(`Room ${roomID} create successfully.`);
+    return res.status(APIStatus.OK.status).json(APIStatus.OK);
 }
 
 function makeID(length) {

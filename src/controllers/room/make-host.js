@@ -6,6 +6,7 @@ const APIStatus = require("../../configs/api-errors");
 const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase");
 
 async function makeHost(req, res) {
+    logger.info(`${req.method} ${req.baseUrl + req.path}`);
     if (
         req.query.uuid === undefined ||
         req.query.uuid === null ||
@@ -84,6 +85,21 @@ async function makeHost(req, res) {
                     .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
                     .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
             }
+            error = await addToFirebase(
+                req,
+                "users",
+                receivedRoomData.data.host,
+                "in-room",
+                "status",
+            );
+            if (error) {
+                logger.error(
+                    `At adding to Firebase. ${APIStatus.INTERNAL.FIREBASE_ERROR.message}: ${dataFromFirebase.error.message}`,
+                );
+                return res
+                    .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+                    .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+            }
 
             const io = req.app.get("socket");
             io.to(req.params.room_id).emit("room-event", {
@@ -95,17 +111,13 @@ async function makeHost(req, res) {
             });
 
             logger.info(`The host in room ${req.params.room_id} is now ${req.query.uuid}.`);
-            return res.status(APIStatus.OK.status).json({
-                status: APIStatus.OK.status,
-                message: APIStatus.OK,
-            });
+            return res.status(APIStatus.OK.status).json(APIStatus.OK);
         }
     }
 
     logger.error(APIStatus.INTERNAL.PLAYER_NOT_IN_ROOM.message);
-    return res.status(APIStatus.INTERNAL.PLAYER_NOT_IN_ROOM.status).json({
-        status: APIStatus.INTERNAL.PLAYER_NOT_IN_ROOM.status,
-        message: APIStatus.INTERNAL.PLAYER_NOT_IN_ROOM,
-    });
+    return res
+        .status(APIStatus.INTERNAL.PLAYER_NOT_IN_ROOM.status)
+        .json(APIStatus.INTERNAL.PLAYER_NOT_IN_ROOM);
 }
 module.exports = { makeHost };

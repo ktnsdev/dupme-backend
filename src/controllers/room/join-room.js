@@ -77,10 +77,7 @@ async function joinRoom(req, res) {
     for (let i = 0; i < playersdata.length; i++) {
         if (playersdata[i] == req.query.uuid) {
             logger.error(APIStatus.INTERNAL.PLAYER_ALREADY_IN.message);
-            return res.status(500).json({
-                status: APIStatus.INTERNAL.PLAYER_ALREADY_IN.status,
-                message: APIStatus.INTERNAL.PLAYER_ALREADY_IN,
-            });
+            return res.status(500).json(APIStatus.INTERNAL.PLAYER_ALREADY_IN);
         }
     }
     playersdata.push(req.query.uuid);
