@@ -16,7 +16,7 @@ async function quitRoom(req, res) {
         req.params.room_id === null ||
         req.params.room_id === ""
     ) {
-        logger.error("400 Bad request from the client");
+        logger.error(APIStatus.BAD_REQUEST.message);
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }
     let receivedUserData = await receiveFromFirebase(req, "users", req.query.uuid);

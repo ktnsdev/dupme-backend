@@ -8,7 +8,7 @@ const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase"
 async function createRoom(req, res) {
     logger.info(`${req.method} ${req.baseUrl + req.path}`);
     if (req.query.uuid === undefined || req.query.uuid === null || req.query.uuid === "") {
-        logger.error("400 Bad request from the client");
+        logger.error(APIStatus.BAD_REQUEST.message);
         logger.error("UUID not found.");
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }

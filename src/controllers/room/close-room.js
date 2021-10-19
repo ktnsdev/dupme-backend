@@ -12,7 +12,7 @@ async function closeRoom(req, res) {
         req.params.room_id === null ||
         req.params.room_id === ""
     ) {
-        logger.error("400 Bad request from the client");
+        logger.error(APIStatus.BAD_REQUEST.message);
         logger.error("Room ID not found.");
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }
