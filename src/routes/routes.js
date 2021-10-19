@@ -23,8 +23,7 @@ function Route(app) {
         app.get("/user/:uuid/getName", UserController.getName); // Test API
 
         app.post("/online/", UserController.addUser); // API 1-1 Add User
-
-        app.post("/user/:uuid/remove", UserController.removeUser);
+        app.post("/user/:uuid/remove", UserController.removeUser); // API 1-3 Remove User
 
         app.post("/create-room", RoomController.createRoom); // API 2-1 Create Room
     }

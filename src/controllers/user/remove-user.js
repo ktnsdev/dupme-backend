@@ -5,7 +5,7 @@ const APIStatus = require("../../configs/api-errors");
 
 async function removeUser(req, res) {
     if (req.params.uuid === undefined || req.params.uuid === null || req.params.uuid === "") {
-        logger.error("400 Bad request from the client");
+        logger.error(APIStatus.BAD_REQUEST.message);
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }
 
