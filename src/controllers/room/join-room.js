@@ -114,10 +114,7 @@ async function joinRoom(req, res) {
     });
 
     logger.info(`The user ${req.query.uuid} has joined ${req.params.room_id}.`);
-    return res.status(APIStatus.OK.status).json({
-        status: APIStatus.OK.status,
-        message: APIStatus.OK,
-    });
+    return res.status(APIStatus.OK.status).json(APIStatus.OK);
 }
 
 module.exports = { joinRoom };
