@@ -4,6 +4,7 @@ const { removeFromFirebase } = require("../../firebase/firebase");
 const APIStatus = require("../../configs/api-errors");
 
 async function removeUser(req, res) {
+    logger.info(`${req.method} ${req.baseUrl + req.path}`);
     if (req.params.uuid === undefined || req.params.uuid === null || req.params.uuid === "") {
         logger.error(APIStatus.BAD_REQUEST.message);
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);

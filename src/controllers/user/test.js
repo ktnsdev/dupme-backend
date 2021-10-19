@@ -18,6 +18,7 @@ const addToFirebaseMockData = {
 };
 
 async function getName(req, res) {
+    logger.info(`${req.method} ${req.baseUrl + req.path}`);
     const io = req.app.get("socket");
 
     logger.info(`${req.method} ${req.baseUrl + req.path}`);
@@ -73,12 +74,10 @@ async function getName(req, res) {
         let error = await removeFromFirebase(req, "users", req.params.uuid);
 
         if (error) {
-            return res
-                .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
-                .json({
-                    response: APIStatus.INTERNAL.FIREBASE_ERROR,
-                    error: error,
-                });
+            return res.status(APIStatus.INTERNAL.FIREBASE_ERROR.status).json({
+                response: APIStatus.INTERNAL.FIREBASE_ERROR,
+                error: error,
+            });
         }
 
         return res

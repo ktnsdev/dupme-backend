@@ -9,7 +9,7 @@ function UserController() {
         getName,
         addUser,
         checkStatus,
-        changeUsername
+        changeUsername,
         removeUser,
     };
 }
