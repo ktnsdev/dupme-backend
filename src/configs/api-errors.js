@@ -44,6 +44,10 @@ const APIStatus = {
             status: 500,
             message: "The player with that UUID is not in the room",
         },
+        USERNAME_IS_THE_SAME: {
+            status: 500,
+            message: "Can't change the username because the username provided is the same."
+        },
         PLAYER_NOT_HOST: {
             status: 500,
             message: "The player who is not the host cannot make this request",
