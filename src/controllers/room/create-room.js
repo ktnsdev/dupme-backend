@@ -1,4 +1,4 @@
-//POST /create-room/?uuid=
+//POST /create-room/?uuid=&difficulty=&turns=
 
 const dayjs = require("dayjs");
 const { logger } = require("../../configs/config");
@@ -7,7 +7,19 @@ const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase"
 
 async function createRoom(req, res) {
     logger.info(`${req.method} ${req.baseUrl + req.path}`);
-    if (req.query.uuid === undefined || req.query.uuid === null || req.query.uuid === "") {
+    if (
+        req.query.uuid === undefined ||
+        req.query.uuid === null ||
+        req.query.uuid === "" ||
+        req.query.difficulty === undefined ||
+        req.query.difficulty === null ||
+        req.query.difficulty === "" ||
+        (req.query.difficulty !== "0" && req.query.difficulty !== "1") ||
+        req.query.turns === undefined ||
+        req.query.turns === null ||
+        req.query.turns === "" ||
+        isNaN(req.query.turns)
+    ) {
         logger.error(APIStatus.BAD_REQUEST.message);
         logger.error("UUID not found.");
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
@@ -51,7 +63,12 @@ async function createRoom(req, res) {
         room_id: roomID,
         host: req.query.uuid,
         players: [req.query.uuid],
-        settings: { difficulty: 0, levels: 0, player_limit: 2, turns: 0 },
+        settings: {
+            difficulty: parseInt(req.query.difficulty),
+            levels: 0,
+            player_limit: 2,
+            turns: parseInt(req.query.turns),
+        },
         status: "idle",
         time_created: date.toISOString(),
     };
@@ -63,8 +80,8 @@ async function createRoom(req, res) {
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
     }
-    let error2 = await addToFirebase(req, "users", req.query.uuid, "in-room-as-host", "status");
-    if (error2) {
+    error = await addToFirebase(req, "users", req.query.uuid, "in-room-as-host", "status");
+    if (error) {
         logger.error(
             `At adding to Firebase. ${APIStatus.INTERNAL.FIREBASE_ERROR.message}: ${dataFromFirebase.error.message}`,
         );

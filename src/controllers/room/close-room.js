@@ -3,7 +3,11 @@
 const dayjs = require("dayjs");
 const { logger } = require("../../configs/config");
 const APIStatus = require("../../configs/api-errors");
-const { removeFromFirebase } = require("../../firebase/firebase");
+const {
+    removeFromFirebase,
+    receiveFromFirebase,
+    addToFirebase,
+} = require("../../firebase/firebase");
 
 async function closeRoom(req, res) {
     logger.info(`${req.method} ${req.baseUrl + req.path}`);
@@ -16,6 +20,41 @@ async function closeRoom(req, res) {
         logger.error("Room ID not found.");
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }
+    let receivedRoomData = await receiveFromFirebase(req, "rooms", req.params.room_id);
+
+    if (receivedRoomData.error) {
+        logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
+        return res
+            .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+    }
+
+    if (!receivedRoomData.data) {
+        logger.error(APIStatus.INTERNAL.ROOM_NOT_FOUND.message);
+        return res
+            .status(APIStatus.INTERNAL.ROOM_NOT_FOUND.status)
+            .json(APIStatus.INTERNAL.ROOM_NOT_FOUND);
+    }
+
+    if (receivedRoomData.data.status !== "idle") {
+        logger.error(APIStatus.INTERNAL.ROOM_NOT_IDLE.message);
+        return res
+            .status(APIStatus.INTERNAL.ROOM_NOT_IDLE.status)
+            .json(APIStatus.INTERNAL.ROOM_NOT_IDLE);
+    }
+    let playersdata = receivedRoomData.data.players;
+    for (let i = 0; i < playersdata.length; i++) {
+        let error = await addToFirebase(req, "users", playersdata[i], "idle", "status");
+        if (error) {
+            logger.error(
+                `At adding to Firebase. ${APIStatus.INTERNAL.FIREBASE_ERROR.message}: ${dataFromFirebase.error.message}`,
+            );
+            return res
+                .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+                .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+        }
+    }
+
     let error = await removeFromFirebase(req, "rooms", req.params.room_id);
     if (error) {
         logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
