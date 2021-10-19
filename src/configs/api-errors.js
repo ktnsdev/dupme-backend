@@ -46,7 +46,7 @@ const APIStatus = {
         },
         USERNAME_IS_THE_SAME: {
             status: 500,
-            message: "Can't change the username because the username provided is the same."
+            message: "Can't change the username because the username provided is the same as the old one."
         },
         PLAYER_NOT_HOST: {
             status: 500,

@@ -42,7 +42,7 @@ async function changeUsername(req, res) {
             .json(APIStatus.INTERNAL.USERNAME_IS_THE_SAME);
     }
 
-    let error = await addToFirebase(req, "users", req.params.uuid, "username");
+    let error = await addToFirebase(req, "users", req.params.uuid, req.query.to, "username");
     if (error) {
         logger.error(
             `At adding to Firebase. ${APIStatus.INTERNAL.FIREBASE_ERROR.message}: ${data.error.message}`,
