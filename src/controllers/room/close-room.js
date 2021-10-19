@@ -3,11 +3,7 @@
 const dayjs = require("dayjs");
 const { logger } = require("../../configs/config");
 const APIStatus = require("../../configs/api-errors");
-const {
-    receiveFromFirebase,
-    addToFirebase,
-    removeFromFirebase,
-} = require("../../firebase/firebase");
+const { removeFromFirebase } = require("../../firebase/firebase");
 
 async function closeRoom(req, res) {
     if (
@@ -21,6 +17,7 @@ async function closeRoom(req, res) {
     }
     let error = await removeFromFirebase(req, "rooms", req.params.room_id);
     if (error) {
+        logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
         return res
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
@@ -34,9 +31,10 @@ async function closeRoom(req, res) {
             timestamp: dayjs().toISOString(),
         },
     });
+    logger.info(`Room ${req.params.room_id} closed successfully.`);
     return res.status(APIStatus.OK.status).json({
         status: APIStatus.OK.status,
-        message: `Room ${req.params.room_id} closed successfully.`,
+        message: APIStatus.OK,
     });
 }
 

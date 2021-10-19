@@ -40,6 +40,7 @@ function Route(app) {
         app.post("/room/:room_id/start", RoomController.startGame); //API 2-5 Start Game
         app.post("/room/:room_id/end", RoomController.endGame); //API 2-6 End Game
         app.get("/room/:room_id/status", RoomController.getRoomStatus); //API 2-7 Get Room Status
+        app.post("/room/:room_id/make-host", RoomController.makeHost); // API 2-9 Make Host
     }
 
     return { setup };

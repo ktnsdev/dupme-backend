@@ -4,7 +4,6 @@ const dayjs = require("dayjs");
 const { logger } = require("../../configs/config");
 const APIStatus = require("../../configs/api-errors");
 const { receiveFromFirebase, addToFirebase } = require("../../firebase/firebase");
-const { socketListener } = require("../../socket/socket");
 
 async function joinRoom(req, res) {
     logger.info(`${req.method} ${req.baseUrl + req.path}`);
@@ -23,14 +22,34 @@ async function joinRoom(req, res) {
 
     let receivedUserData = await receiveFromFirebase(req, "users", req.query.uuid);
 
+    if (receivedUserData.error) {
+        logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
+        return res
+            .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+    }
+
     if (!receivedUserData.data) {
         logger.error(APIStatus.INTERNAL.UUID_NOT_FOUND.message);
         return res
             .status(APIStatus.INTERNAL.UUID_NOT_FOUND.status)
             .json(APIStatus.INTERNAL.UUID_NOT_FOUND);
     }
+    if (receivedUserData.data.status !== "idle") {
+        logger.error(APIStatus.INTERNAL.PLAYER_NOT_IDLE.message);
+        return res
+            .status(APIStatus.INTERNAL.PLAYER_NOT_IDLE.status)
+            .json(APIStatus.INTERNAL.PLAYER_NOT_IDLE);
+    }
 
     let receivedRoomData = await receiveFromFirebase(req, "rooms", req.params.room_id);
+
+    if (receivedRoomData.error) {
+        logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
+        return res
+            .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+    }
 
     if (!receivedRoomData.data) {
         logger.error(APIStatus.INTERNAL.ROOM_NOT_FOUND.message);
@@ -57,9 +76,11 @@ async function joinRoom(req, res) {
 
     for (let i = 0; i < playersdata.length; i++) {
         if (playersdata[i] == req.query.uuid) {
-            return res
-                .status(500)
-                .json({ status: 500, message: "The player already in this room" });
+            logger.error(APIStatus.INTERNAL.PLAYER_ALREADY_IN.message);
+            return res.status(500).json({
+                status: APIStatus.INTERNAL.PLAYER_ALREADY_IN.status,
+                message: APIStatus.INTERNAL.PLAYER_ALREADY_IN,
+            });
         }
     }
     playersdata.push(req.query.uuid);
@@ -73,9 +94,18 @@ async function joinRoom(req, res) {
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
     }
+    let error2 = await addToFirebase(req, "users", req.query.uuid, "in-room", "status");
+    if (error2) {
+        logger.error(
+            `At adding to Firebase. ${APIStatus.INTERNAL.FIREBASE_ERROR.message}: ${dataFromFirebase.error.message}`,
+        );
+        return res
+            .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+    }
 
     const io = req.app.get("socket");
-    io.to(req.params.room_id).emit("user_joined", {
+    io.to(req.params.room_id).emit("room-event", {
         event: "user_joined",
         data: {
             uuid: req.query.uuid,
@@ -83,10 +113,10 @@ async function joinRoom(req, res) {
         },
     });
 
-    logger.info(`The user ${req.query.uuid} has joined ${req.params.uuid}.`);
+    logger.info(`The user ${req.query.uuid} has joined ${req.params.room_id}.`);
     return res.status(APIStatus.OK.status).json({
         status: APIStatus.OK.status,
-        message: `Succesfully Join room ${req.params.room_id}.`,
+        message: APIStatus.OK,
     });
 }
 

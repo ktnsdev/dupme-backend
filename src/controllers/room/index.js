@@ -5,6 +5,7 @@ const { joinRoom } = require("./join-room.js");
 const { quitRoom } = require("./quit-room.js");
 const { closeRoom } = require("./close-room.js");
 const { getRoomStatus } = require("./get-room-status.js");
+const { makeHost } = require("./make-host.js");
 
 function RoomController() {
     return {
@@ -14,7 +15,8 @@ function RoomController() {
         joinRoom,
         quitRoom,
         closeRoom,
-        getRoomStatus
+        getRoomStatus,
+        makeHost,
     };
 }
 

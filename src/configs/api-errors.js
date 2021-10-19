@@ -21,16 +21,16 @@ const APIStatus = {
             message: "Can't find online player with that UUID",
         },
         ROOM_NOT_IDLE: {
-            status: 500, 
-            message: "Can't perform the request because the room is not idle."
+            status: 500,
+            message: "Can't perform the request because the room is not idle.",
         },
         ROOM_NOT_IN_GAME: {
             status: 500,
-            message: "Can't end the game because the game has not been started yet."
+            message: "Can't end the game because the game has not been started yet.",
         },
         ROOM_IS_FULL: {
             status: 500,
-            message: "Can't perform the request because the room is full."
+            message: "Can't perform the request because the room is full.",
         },
         USER_DATA_CORRUPTED: {
             status: 500,
@@ -51,6 +51,18 @@ const APIStatus = {
         FIREBASE_ERROR: {
             status: 500,
             message: "Firebase request error",
+        },
+        PLAYER_ALREADY_IN: {
+            status: 500,
+            message: "The player already in this room",
+        },
+        PLAYER_ALREADY_HOST: {
+            status: 500,
+            message: "The player already be a host.",
+        },
+        PLAYER_NOT_IDLE: {
+            status: 500,
+            message: "The player is not idle.",
         },
     },
 };

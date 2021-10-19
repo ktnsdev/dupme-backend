@@ -14,14 +14,24 @@ async function createRoom(req, res) {
 
     logger.info(`A user with UUID ${req.query.uuid} has requested to create a room.`);
     let receivedUserData = await receiveFromFirebase(req, "users", req.query.uuid);
-
+    if (receivedUserData.error) {
+        logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
+        return res
+            .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+    }
     if (!receivedUserData.data) {
         logger.error("User not found.");
         return res
             .status(APIStatus.INTERNAL.UUID_NOT_FOUND.status)
             .json(APIStatus.INTERNAL.UUID_NOT_FOUND);
     }
-
+    if (receivedUserData.data.status !== "idle") {
+        logger.error(APIStatus.INTERNAL.PLAYER_NOT_IDLE.message);
+        return res
+            .status(APIStatus.INTERNAL.PLAYER_NOT_IDLE.status)
+            .json(APIStatus.INTERNAL.PLAYER_NOT_IDLE);
+    }
     //check UUID with database if it has ok if not return error
     let roomID;
     let receivedRoomData;
@@ -48,6 +58,15 @@ async function createRoom(req, res) {
     let error = await addToFirebase(req, "rooms", roomID, roomData);
 
     if (error) {
+        return res
+            .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+    }
+    let error2 = await addToFirebase(req, "users", req.query.uuid, "in-room-as-host", "status");
+    if (error2) {
+        logger.error(
+            `At adding to Firebase. ${APIStatus.INTERNAL.FIREBASE_ERROR.message}: ${dataFromFirebase.error.message}`,
+        );
         return res
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
