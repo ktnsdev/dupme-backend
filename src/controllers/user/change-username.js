@@ -37,7 +37,7 @@ async function changeUsername(req, res) {
 
     if (data.data === req.query.to) {
         logger.error(APIStatus.INTERNAL.USERNAME_IS_THE_SAME.message);
-        return req
+        return res
             .status(APIStatus.INTERNAL.USERNAME_IS_THE_SAME.status)
             .json(APIStatus.INTERNAL.USERNAME_IS_THE_SAME);
     }
