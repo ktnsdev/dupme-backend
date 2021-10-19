@@ -32,8 +32,8 @@ function Route(app) {
 
         app.post("/online/", UserController.addUser); // API 1-1 Add User
         app.get("/user/:uuid/status", UserController.checkStatus); // API 1-2 Check User Status
+        app.post("/user/:uuid/remove", UserController.removeUser); // API 1-3 Remove User
         app.post("/user/:uuid/change", UserController.changeUsername); // API 1-4 Change Username
-
 
         app.post("/create-room", RoomController.createRoom); // API 2-1 Create Room
         app.post("/room/:room_id/join", RoomController.joinRoom); // API 2-2 Join Room
