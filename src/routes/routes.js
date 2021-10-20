@@ -2,6 +2,9 @@ const uc = require("../controllers/user");
 const rc = require("../controllers/room");
 const { checkAlive } = require("../controllers/check-alive");
 const { logger } = require("../configs/config");
+const { loginMiddleware, middleware } = require("../middleware/middleware");
+const { login } = require("../controllers/auth/login");
+const passport = require("passport");
 
 const UserController = uc();
 const RoomController = rc();
@@ -25,24 +28,26 @@ function Route(app) {
                 extended: false,
             }),
         );
+        app.use(passport.initialize());
 
         app.get("/check-alive", checkAlive); // Check Alive
+        app.post("/login", loginMiddleware, login); // Login
 
         app.post("/user/:uuid/getName", UserController.getName); // Test API
 
-        app.post("/online/", UserController.addUser); // API 1-1 Add User
-        app.get("/user/:uuid/status", UserController.checkStatus); // API 1-2 Check User Status
-        app.post("/user/:uuid/remove", UserController.removeUser); // API 1-3 Remove User
-        app.post("/user/:uuid/change", UserController.changeUsername); // API 1-4 Change Username
+        app.post("/online/", middleware, UserController.addUser); // API 1-1 Add User
+        app.get("/user/:uuid/status", middleware, UserController.checkStatus); // API 1-2 Check User Status
+        app.post("/user/:uuid/remove", middleware, UserController.removeUser); // API 1-3 Remove User
+        app.post("/user/:uuid/change", middleware, UserController.changeUsername); // API 1-4 Change Username
 
-        app.post("/create-room", RoomController.createRoom); // API 2-1 Create Room
-        app.post("/room/:room_id/join", RoomController.joinRoom); // API 2-2 Join Room
-        app.post("/room/:room_id/kick", RoomController.quitRoom); // API 2-3 Quit Room
-        app.post("/room/:room_id/close", RoomController.closeRoom); //API 2-4 Close Room
-        app.post("/room/:room_id/start", RoomController.startGame); //API 2-5 Start Game
-        app.post("/room/:room_id/end", RoomController.endGame); //API 2-6 End Game
-        app.get("/room/:room_id/status", RoomController.getRoomStatus); //API 2-7 Get Room Status
-        app.post("/room/:room_id/make-host", RoomController.makeHost); // API 2-9 Make Host
+        app.post("/create-room", middleware, RoomController.createRoom); // API 2-1 Create Room
+        app.post("/room/:room_id/join", middleware, RoomController.joinRoom); // API 2-2 Join Room
+        app.post("/room/:room_id/kick", middleware, RoomController.quitRoom); // API 2-3 Quit Room
+        app.post("/room/:room_id/close", middleware, RoomController.closeRoom); //API 2-4 Close Room
+        app.post("/room/:room_id/start", middleware, RoomController.startGame); //API 2-5 Start Game
+        app.post("/room/:room_id/end", middleware, RoomController.endGame); //API 2-6 End Game
+        app.get("/room/:room_id/status", middleware, RoomController.getRoomStatus); //API 2-7 Get Room Status
+        app.post("/room/:room_id/make-host", middleware, RoomController.makeHost); // API 2-9 Make Host
     }
 
     return { setup };

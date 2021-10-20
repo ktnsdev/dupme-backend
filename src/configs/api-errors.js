@@ -7,6 +7,14 @@ const APIStatus = {
         status: 400,
         message: "Bad Request",
     },
+    UNAUTHORIZED_USERNAME_PASSWORD_INCORRECT: {
+        status: 401,
+        message: "Unauthorized: Incorrect username or UID."
+    },
+    UNAUTHORIZED: {
+        status: 401,
+        message: "Unauthorized"
+    },
     INTERNAL: {
         SERVER_ERROR: {
             status: 500,

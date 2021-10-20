@@ -8,7 +8,7 @@ const { getDatabase } = require("firebase/database");
  * @param {import("express").Application} app - Express Application from Express.js
  * @returns {{name: string, message: string} | undefined} error - Returns an error object if the function can't initialise a connection to Firebase. No return if there's no error.
  */
-function initialiseFirebase(app) {
+async function initialiseFirebase(app) {
     if (
         process.env.FIREBASE_SERVICE_ACCOUNT_KEY_JSON === undefined ||
         process.env.FIREBASE_DATABASE_DOMAIN === undefined
@@ -22,12 +22,12 @@ function initialiseFirebase(app) {
 
     let key = process.env.FIREBASE_SERVICE_ACCOUNT_KEY_JSON;
 
-    admin.initializeApp({
+    await admin.initializeApp({
         credential: admin.credential.cert(JSON.parse(key)),
         databaseURL: process.env.FIREBASE_DATABASE_DOMAIN,
     });
 
-    var db = admin.database();
+    let db = admin.database();
 
     app.set("db", db);
 }

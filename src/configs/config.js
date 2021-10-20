@@ -27,11 +27,20 @@ function setupSocket(server, app) {
 /**
  * @param {import("express").Application} app - Express Application from Express.js
  */
-function setupFirebase(app) {
-    var err = initialiseFirebase(app);
+async function setupFirebase(app) {
+    let err = await initialiseFirebase(app);
     if (err !== undefined) {
         logger.error("FATAL: " + err.name);
         logger.error(err.message);
+        process.exit(1);
+    }
+}
+
+function checkStructEnv() {
+    if (process.env.JWT_SECRET === undefined) {
+        logger.error(
+            "FATAL: Authorization Secret Key hasn't been set. Please provide one before starting the server.",
+        );
         process.exit(1);
     }
 }
@@ -42,4 +51,5 @@ module.exports = {
     NODE_ENV: process.env.NODE_ENV,
     setupSocket,
     setupFirebase,
+    checkStructEnv
 };
