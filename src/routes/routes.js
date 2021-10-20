@@ -35,9 +35,9 @@ function Route(app) {
 
         app.post("/user/:uuid/getName", UserController.getName); // Test API
 
-        app.post("/online/", middleware, UserController.addUser); // API 1-1 Add User
+        app.post("/create-user", middleware, UserController.addUser); // API 1-1 Add User
         app.get("/user/:uuid/status", middleware, UserController.checkStatus); // API 1-2 Check User Status
-        app.post("/user/:uuid/remove", middleware, UserController.removeUser); // API 1-3 Remove User
+        app.post("/user/:uuid/logout", middleware, UserController.removeUser); // API 1-3 Remove User
         app.post("/user/:uuid/change", middleware, UserController.changeUsername); // API 1-4 Change Username
 
         app.post("/create-room", middleware, RoomController.createRoom); // API 2-1 Create Room

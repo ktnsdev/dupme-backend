@@ -36,12 +36,9 @@ async function addUser(req, res) {
     }
 
     return res.status(APIStatus.OK.status).json({
-        response: APIStatus.OK,
-        data: {
-            username: req.query.username,
-            uuid: uuid,
-            logged_in: response.logged_in,
-        },
+        username: req.query.username,
+        uuid: uuid,
+        logged_in: response.logged_in,
     });
 }
 
