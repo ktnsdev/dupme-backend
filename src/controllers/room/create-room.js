@@ -31,7 +31,7 @@ async function createRoom(req, res) {
         logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
         return res
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
-            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: receivedUserData.error });
     }
     if (!receivedUserData.data) {
         logger.error("User not found.");
@@ -90,7 +90,7 @@ async function createRoom(req, res) {
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
     }
     logger.info(`Room ${roomID} create successfully.`);
-    return res.status(APIStatus.OK.status).json(APIStatus.OK);
+    return res.status(APIStatus.OK.status).json(roomData);
 }
 
 function makeID(length) {

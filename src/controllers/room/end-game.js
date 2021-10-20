@@ -48,8 +48,8 @@ async function endGame(req, res) {
 
     const io = req.app.get("socket");
     await io.to(roomId).emit("room-event", {
-        event: "room-event",
-        data: { message: "end", timestamp: dayjs().toISOString() },
+        event: "end_game",
+        data: { message: "end_game", timestamp: dayjs().toISOString() },
     });
 
     let error = await addToFirebase(req, "rooms", roomId, IDLE_STATUS, "/status");

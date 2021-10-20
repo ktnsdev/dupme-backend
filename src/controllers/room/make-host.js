@@ -103,7 +103,7 @@ async function makeHost(req, res) {
 
             const io = req.app.get("socket");
             io.to(req.params.room_id).emit("room-event", {
-                event: "make_host",
+                event: "host_changed",
                 data: {
                     uuid: req.query.uuid,
                     timestamp: dayjs().toISOString(),
