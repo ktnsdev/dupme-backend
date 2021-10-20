@@ -19,7 +19,7 @@ async function startGame(req, res) {
 
     let roomId = req.params.room_id;
 
-    let dataFromFirebase = await receiveFromFirebase(req, "rooms", roomId, "/status");
+    let dataFromFirebase = await receiveFromFirebase(req, "rooms", roomId);
 
     if (dataFromFirebase.error) {
         logger.error(
@@ -32,14 +32,14 @@ async function startGame(req, res) {
             .json({ response: APIStatus.INTERNAL.ROOM_NOT_FOUND, error: dataFromFirebase.error });
     }
 
-    if (!dataFromFirebase.data) {
+    if (!dataFromFirebase.data || !dataFromFirebase.data.players || !dataFromFirebase.data.host) {
         logger.error(APIStatus.INTERNAL.ROOM_NOT_FOUND.message);
         return res
             .status(APIStatus.INTERNAL.ROOM_NOT_FOUND.status)
             .json(APIStatus.INTERNAL.ROOM_NOT_FOUND);
     }
 
-    if (dataFromFirebase.data !== "idle") {
+    if (dataFromFirebase.data.status !== "idle") {
         logger.error(APIStatus.INTERNAL.ROOM_NOT_IDLE.message);
         return res
             .status(APIStatus.INTERNAL.ROOM_NOT_IDLE.status)
@@ -61,6 +61,25 @@ async function startGame(req, res) {
         return res
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+    }
+
+    for (let i = 0; i < dataFromFirebase.data.players.length; i++) {
+        error = await addToFirebase(
+            req,
+            "users",
+            dataFromFirebase.data.players[i],
+            IN_GAME_STATUS,
+            "/status",
+        );
+
+        if (error) {
+            logger.error(
+                `At writing to Firebase: ${APIStatus.INTERNAL.FIREBASE_ERROR.message}: ${error.message}`,
+            );
+            return res
+                .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+                .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+        }
     }
 
     logger.info(`Room ID ${roomId} has started its game.`);
