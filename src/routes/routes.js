@@ -47,6 +47,7 @@ function Route(app) {
         app.post("/room/:room_id/start", middleware, RoomController.startGame); //API 2-5 Start Game
         app.post("/room/:room_id/end", middleware, RoomController.endGame); //API 2-6 End Game
         app.get("/room/:room_id/status", middleware, RoomController.getRoomStatus); //API 2-7 Get Room Status
+        app.post("/room/:room_id/settings", middleware, RoomController.roomSettings); //API 2-8 Room Settings
         app.post("/room/:room_id/make-host", middleware, RoomController.makeHost); // API 2-9 Make Host
     }
 
