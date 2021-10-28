@@ -49,7 +49,7 @@ async function receiveFromFirebase(req, primaryPath, secondaryPath, additionalPa
         };
     }
 
-    if (primaryPath !== "rooms" && primaryPath !== "users") {
+    if (primaryPath !== "rooms" && primaryPath !== "users" && primaryPath !== "misc") {
         return {
             error: {
                 name: "firebase-wrong-primary-path",
@@ -114,7 +114,7 @@ async function addToFirebase(req, primaryPath, secondaryPath, dataToAdd, additio
         };
     }
 
-    if (primaryPath !== "rooms" && primaryPath !== "users") {
+    if (primaryPath !== "rooms" && primaryPath !== "users" && primaryPath !== "misc") {
         return {
             name: "firebase-wrong-primary-path",
             message: 'Primary path can only be "rooms" or "users"',
@@ -161,7 +161,7 @@ async function removeFromFirebase(req, primaryPath, secondaryPath, additionalPat
         };
     }
 
-    if (primaryPath !== "rooms" && primaryPath !== "users") {
+    if (primaryPath !== "rooms" && primaryPath !== "users" && primaryPath !== "misc") {
         return {
             name: "firebase-wrong-primary-path",
             message: 'Primary path can only be "rooms" or "users"',

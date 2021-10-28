@@ -5,6 +5,7 @@ const { logger } = require("../configs/config");
 const { loginMiddleware, middleware } = require("../middleware/middleware");
 const { login } = require("../controllers/auth/login");
 const passport = require("passport");
+const { playersCount } = require("../controllers/misc/players-count");
 
 const UserController = uc();
 const RoomController = rc();
@@ -49,6 +50,8 @@ function Route(app) {
         app.get("/room/:room_id/status", middleware, RoomController.getRoomStatus); //API 2-7 Get Room Status
         app.post("/room/:room_id/settings", middleware, RoomController.roomSettings); //API 2-8 Room Settings
         app.post("/room/:room_id/make-host", middleware, RoomController.makeHost); // API 2-9 Make Host
+
+        app.get("/misc/players-count", middleware, playersCount) // API 3-1 Get Players Count
     }
 
     return { setup };
