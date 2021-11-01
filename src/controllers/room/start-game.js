@@ -52,6 +52,8 @@ async function startGame(req, res) {
         data: { message: "start_game", timestamp: dayjs().toISOString() },
     });
 
+    let startPlayer = dataFromFirebase.data.players[Math.floor(Math.random() * dataFromFirebase.data.players.length)]
+
     let error = await addToFirebase(req, "rooms", roomId, IN_GAME_STATUS, "/status");
 
     if (error) {
@@ -82,8 +84,10 @@ async function startGame(req, res) {
         }
     }
 
-    logger.info(`Room ID ${roomId} has started its game.`);
-    return res.status(APIStatus.OK.status).json(APIStatus.OK);
+    logger.info(`Room ID ${roomId} has started its game. ${startPlayer} will start.`);
+    return res.status(APIStatus.OK.status).json({
+        starts_with: startPlayer,
+    });
 }
 
 module.exports = { startGame };
