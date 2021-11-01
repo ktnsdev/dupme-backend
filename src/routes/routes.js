@@ -40,6 +40,7 @@ function Route(app) {
         app.get("/user/:uuid/status", middleware, UserController.checkStatus); // API 1-2 Check User Status
         app.post("/user/:uuid/logout", middleware, UserController.removeUser); // API 1-3 Remove User
         app.post("/user/:uuid/change", middleware, UserController.changeUsername); // API 1-4 Change Username
+        app.get("/user/all", middleware, UserController.getAllPlayer); // API 1-5 Get All Player
 
         app.post("/create-room", middleware, RoomController.createRoom); // API 2-1 Create Room
         app.post("/room/:room_id/join", middleware, RoomController.joinRoom); // API 2-2 Join Room
@@ -51,7 +52,7 @@ function Route(app) {
         app.post("/room/:room_id/settings", middleware, RoomController.roomSettings); //API 2-8 Room Settings
         app.post("/room/:room_id/make-host", middleware, RoomController.makeHost); // API 2-9 Make Host
 
-        app.get("/misc/players-count", middleware, playersCount) // API 3-1 Get Players Count
+        app.get("/misc/players-count", middleware, playersCount); // API 3-1 Get Players Count
     }
 
     return { setup };
