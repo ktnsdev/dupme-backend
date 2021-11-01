@@ -4,11 +4,7 @@
     "description": "",
     "main": "app.js",
     "engines": {
-<<<<<<< HEAD
-        "node": "14.x"
-=======
         "node": "16.11.1"
->>>>>>> dev
     },
     "scripts": {
         "start": "node app.js",
