@@ -17,12 +17,12 @@ async function getAllPlayer(req, res) {
     }
 
     if (!data.data) {
-        logger.error(APIStatus.INTERNAL.UUID_NOT_FOUND.message);
+        logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
         return res
-            .status(APIStatus.INTERNAL.UUID_NOT_FOUND.status)
-            .json(APIStatus.INTERNAL.UUID_NOT_FOUND);
+            .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
+            .json(APIStatus.INTERNAL.FIREBASE_ERROR);
     }
-    logger.info(data.data);
+    
     return res.status(APIStatus.OK.status).json(data.data);
 }
 module.exports = { getAllPlayer };
