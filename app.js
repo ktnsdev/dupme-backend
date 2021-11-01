@@ -1,14 +1,20 @@
-const express = require("express");
-const app = express();
+const app = require("express")();
+const server = require("http").createServer(app);
 
-require("dotenv").config();
+const {
+    logger,
+    PORT,
+    setupSocket,
+    setupFirebase,
+    checkStructEnv,
+} = require("./src/configs/config.js");
+const Router = require("./src/routes/routes.js");
 
-const Route = require("./src/routes/routes.js");
-const Router = Route(app);
-Router.setup();
+setupFirebase(app);
+setupSocket(server, app);
+Router(app).setup();
+checkStructEnv();
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-    console.log("Starting server on port " + PORT);
+server.listen(PORT, () => {
+    logger.info(`Starting server on port ${PORT}...`);
 });
