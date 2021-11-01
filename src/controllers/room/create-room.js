@@ -21,7 +21,6 @@ async function createRoom(req, res) {
         isNaN(req.query.turns)
     ) {
         logger.error(APIStatus.BAD_REQUEST.message);
-        logger.error("UUID not found.");
         return res.status(APIStatus.BAD_REQUEST.status).json(APIStatus.BAD_REQUEST);
     }
 
