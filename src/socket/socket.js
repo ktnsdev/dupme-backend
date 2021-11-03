@@ -15,8 +15,11 @@ function socketListener(server, app) {
     }
 
     const { logger } = require("../configs/config");
-    const { Server } = require("socket.io");
-    const io = new Server(server);
+    const io = require("socket.io")(server, {
+        cors: {
+            origin: "*",
+        },
+    });
 
     app.set("socket", io);
 

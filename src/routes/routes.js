@@ -30,6 +30,11 @@ function Route(app) {
                 extended: false,
             }),
         );
+        app.use(function (req, res, next) {
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.setHeader("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization");
+            next();
+        });
         app.use(passport.initialize());
 
         app.get("/check-alive", checkAlive); // Check Alive
