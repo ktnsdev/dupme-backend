@@ -48,7 +48,7 @@ async function joinRoom(req, res) {
         logger.error(APIStatus.INTERNAL.FIREBASE_ERROR.message);
         return res
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
-            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: receivedRoomData.error });
     }
 
     if (!receivedRoomData.data) {
@@ -98,7 +98,7 @@ async function joinRoom(req, res) {
         );
         return res
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
-            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
+            .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error2 });
     }
 
     const io = req.app.get("socket");
