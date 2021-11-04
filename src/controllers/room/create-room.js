@@ -88,6 +88,7 @@ async function createRoom(req, res) {
             .status(APIStatus.INTERNAL.FIREBASE_ERROR.status)
             .json({ response: APIStatus.INTERNAL.FIREBASE_ERROR, error: error });
     }
+
     logger.info(`Room ${roomID} create successfully.`);
     return res.status(APIStatus.OK.status).json(roomData);
 }

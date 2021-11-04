@@ -86,7 +86,7 @@ async function quitRoom(req, res) {
     }
 
     const io = req.app.get("socket");
-    io.to(req.params.room_id).emit("room-event", {
+    io.sockets.emit(`${req.params.room_id}/room-event`, {
         event: "user_quit",
         data: {
             uuid: req.query.uuid,

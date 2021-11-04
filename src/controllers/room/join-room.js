@@ -102,7 +102,7 @@ async function joinRoom(req, res) {
     }
 
     const io = req.app.get("socket");
-    io.to(req.params.room_id).emit("room-event", {
+    io.sockets.emit(`${req.params.room_id}/room-event`, {
         event: "user_joined",
         data: {
             uuid: req.query.uuid,

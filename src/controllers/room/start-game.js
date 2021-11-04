@@ -47,12 +47,15 @@ async function startGame(req, res) {
     }
 
     const io = req.app.get("socket");
-    await io.to(roomId).emit("room-event", {
+    io.sockets.emit(`${req.params.room_id}/room-event`, {
         event: "start_game",
         data: { message: "start_game", timestamp: dayjs().toISOString() },
     });
 
-    let startPlayer = dataFromFirebase.data.players[Math.floor(Math.random() * dataFromFirebase.data.players.length)]
+    let startPlayer =
+        dataFromFirebase.data.players[
+            Math.floor(Math.random() * dataFromFirebase.data.players.length)
+        ];
 
     let error = await addToFirebase(req, "rooms", roomId, IN_GAME_STATUS, "/status");
 

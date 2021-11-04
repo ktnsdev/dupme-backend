@@ -35,38 +35,8 @@ function socketListener(server, app) {
             logger.info("A user has disconnected");
         });
 
-        socket.on("join-room", (element) => {
-            if (!element || !element.room_id) {
-                logger.info("Unsuccessful attempt to join the room.");
-                return;
-            }
-
-            socket.join(element.room_id);
-            logger.info(`A user joined the room ${element.room_id}.`);
-        });
-
-        socket.on("leave-room", (element) => {
-            if (!element || !element.room_id) {
-                logger.info("Unsuccessful attempt to leave the room.");
-                return;
-            }
-
-            socket.leave(element.room_id);
-            logger.info(`A user left the room ${element.room_id}.`);
-        });
-
-        socket.on("room-event", (element) => {
-            if (element.event === "room_closed") {
-                if (!element.data.room_id) {
-                    logger.info("Unsuccessful attempt to leave the room.");
-                    return;
-                }
-                socket.leave(element.data.room_id);
-                logger.info(`A user left the room ${element.data.room_id}: Room closed`);
-            }
-        });
-
         socket.on("server-event", (element) => {
+            socket.broadcast.emit("server-event", element);
             if (element.event === "server_reset") {
                 if (!element.data.room_id) {
                     logger.info("Unsuccessful attempt to leave the room.");
