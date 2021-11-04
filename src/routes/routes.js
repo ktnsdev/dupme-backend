@@ -7,6 +7,7 @@ const { login } = require("../controllers/auth/login");
 const passport = require("passport");
 const { playersCount } = require("../controllers/misc/players-count");
 const { reset } = require("../controllers/misc/reset");
+const { resetIncludingUsers } = require("../controllers/misc/reset-including-users");
 
 const UserController = uc();
 const RoomController = rc();
@@ -59,7 +60,8 @@ function Route(app) {
         app.post("/room/:room_id/make-host", middleware, RoomController.makeHost); // API 2-9 Make Host
 
         app.get("/misc/players-count", middleware, playersCount); // API 3-1 Get Players Count
-        app.post("/misc/reset", middleware, reset); // API 3-1 Get Players Count
+        app.post("/misc/reset", middleware, reset); // API 3-2 Reset (All Rooms)
+        app.post("/misc/reset-including-users", middleware, resetIncludingUsers); // API 3-3 Reset (All Rooms and Users)
     }
 
     return { setup };
