@@ -121,11 +121,8 @@ async function addToFirebase(req, primaryPath, secondaryPath, dataToAdd, additio
         };
     }
 
-    if (secondaryPath === undefined || secondaryPath === null || secondaryPath === "") {
-        return {
-            name: "firebase-wrong-secondary-path",
-            message: "Secondary path required to add user to the database",
-        };
+    if (secondaryPath === undefined || secondaryPath === null) {
+        secondaryPath = "";
     }
 
     if (additionalPath === undefined || additionalPath === null) {

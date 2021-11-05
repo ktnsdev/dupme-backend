@@ -54,7 +54,7 @@ async function endGame(req, res) {
     }
 
     const io = req.app.get("socket");
-    await io.to(roomId).emit("room-event", {
+    io.sockets.emit(`${req.params.room_id}/room-event`, {
         event: "end_game",
         data: { message: "end_game", timestamp: dayjs().toISOString() },
     });

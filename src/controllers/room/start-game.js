@@ -46,11 +46,10 @@ async function startGame(req, res) {
             .json(APIStatus.INTERNAL.ROOM_NOT_IDLE);
     }
 
-    const io = req.app.get("socket");
-    await io.to(roomId).emit("room-event", {
-        event: "start_game",
-        data: { message: "start_game", timestamp: dayjs().toISOString() },
-    });
+    let startPlayer =
+        dataFromFirebase.data.players[
+            Math.floor(Math.random() * dataFromFirebase.data.players.length)
+        ];
 
     let error = await addToFirebase(req, "rooms", roomId, IN_GAME_STATUS, "/status");
 
@@ -82,8 +81,16 @@ async function startGame(req, res) {
         }
     }
 
-    logger.info(`Room ID ${roomId} has started its game.`);
-    return res.status(APIStatus.OK.status).json(APIStatus.OK);
+    const io = req.app.get("socket");
+    io.sockets.emit(`${req.params.room_id}/room-event`, {
+        event: "start_game",
+        data: { message: "start_game", starts_with: startPlayer, timestamp: dayjs().toISOString() },
+    });
+
+    logger.info(`Room ID ${roomId} has started its game. ${startPlayer} will start.`);
+    return res.status(APIStatus.OK.status).json({
+        starts_with: startPlayer,
+    });
 }
 
 module.exports = { startGame };
